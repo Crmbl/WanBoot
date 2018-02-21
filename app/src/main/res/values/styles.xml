@@ -1,0 +1,49 @@
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="titleTextColor">@color/colorText</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="WindowStyle">
+        <item name="android:background">@color/colorBackground</item>
+    </style>
+
+    <style name="TextStatusTheme">
+        <item name="android:paddingTop">75px</item>
+        <item name="android:paddingBottom">200px</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15pt</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/colorTextSleeping</item>
+        <item name="android:shadowColor">@color/colorShadow</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">4</item>
+    </style>
+
+    <style name="CommandLikeTheme">
+        <item name="android:background">@drawable/textview_bg_round</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">200dp</item>
+        <item name="android:textColor">@color/colorCommandText</item>
+        <item name="android:lines">5</item>
+        <item name="android:padding">10px</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+    <style name="TextStatusThemeSleeping" parent="@style/TextStatusTheme">
+        <item name="android:textColor">@color/colorTextSleeping</item>
+    </style>
+
+    <style name="TextStatusThemeAwake" parent="@style/TextStatusTheme">
+        <item name="android:textColor">@color/colorTextAwake</item>
+    </style>
+
+    <style name="CircleButtonTheme">
+        <item name="android:background">@drawable/button_bg_round</item>
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:textColor">@color/colorText</item>
+    </style>
+</resources>

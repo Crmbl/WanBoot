@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#a29bfe</color>
+    <color name="colorPrimaryDark">#747d8c</color>
+    <color name="colorText">#f1f2f6</color>
+    <color name="colorBackground">#dfe4ea</color>
+    <color name="colorUnderTextView">#b2bec3</color>
+    <color name="colorShadow">#55000000</color>
+    <color name="colorButton">#eb3b5a</color>
+    <color name="colorCommandText">#fdcb6e</color>
+    <color name="colorTextAwake">#ff4757</color>
+    <color name="colorTextSleeping">#0be881</color>
+    <color name="colorPrompt">#000</color>
+</resources>
