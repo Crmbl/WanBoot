@@ -15,7 +15,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">15pt</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:textColor">@color/colorTextSleeping</item>
+        <item name="android:textColor">@color/colorTextNotConnected</item>
         <item name="android:shadowColor">@color/colorShadow</item>
         <item name="android:shadowDx">3</item>
         <item name="android:shadowDy">3</item>
@@ -26,9 +26,13 @@
         <item name="android:background">@drawable/textview_bg_round</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">200dp</item>
+        <item name="android:height">200dp</item>
         <item name="android:textColor">@color/colorCommandText</item>
         <item name="android:lines">5</item>
-        <item name="android:padding">10px</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
         <item name="android:layout_margin">10dp</item>
     </style>
 
@@ -40,10 +44,45 @@
         <item name="android:textColor">@color/colorTextAwake</item>
     </style>
 
+    <style name="TextStatusThemeDetermining" parent="@style/TextStatusTheme">
+        <item name="android:textColor">@color/colorTextDetermining</item>
+    </style>
+
+    <style name="TextStatusThemeError" parent="@style/TextStatusTheme">
+        <item name="android:textColor">@color/colorTextError</item>
+    </style>
+
     <style name="CircleButtonTheme">
         <item name="android:background">@drawable/button_bg_round</item>
         <item name="android:layout_width">150dp</item>
         <item name="android:layout_height">150dp</item>
         <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="LoginButtonTheme">
+        <item name="android:layout_width">213dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:text">Login</item>
+        <item name="android:background">@color/colorTextDetermining</item>
+        <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="EditTextTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:ems">10</item>
+        <item name="android:backgroundTint">@color/colorTextDetermining</item>
+        <item name="android:textColor">@color/colorTextGreen</item>
+        <item name="android:textColorHighlight">@color/colorTextGreen</item>
+    </style>
+
+    <style name="CheckBoxTheme">
+        <item name="android:layout_width">213dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">Remember me</item>
+        <item name="android:textColor">@color/colorTextGreen</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:buttonTint">@color/colorTextDetermining</item>
     </style>
 </resources>

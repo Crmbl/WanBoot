@@ -7,7 +7,30 @@
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/GridLayout1"
+        android:id="@+id/GridLoader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="1"
+        android:rowCount="1"
+        android:orientation="vertical"
+        android:background="@color/colorLoaderBackground"
+        android:translationZ="10dp"
+        android:visibility="invisible"
+        tools:context=".GridXMLActivity" >
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/colorTextAwake" />
+    </GridLayout>
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/GridLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnCount="1"
@@ -18,13 +41,12 @@
         <TextView android:id="@+id/label_status"
             android:layout_row="0"
             android:layout_column="0"
-            android:text="Wake me up!"
+            android:text="@string/title_not_connected"
             style="@style/TextStatusTheme"/>
 
         <TextView android:id="@+id/label_info"
             android:layout_row="1"
             android:layout_column="0"
-            android:visibility="invisible"
             style="@style/CommandLikeTheme" />
 
         <Button android:id ="@+id/push_button"

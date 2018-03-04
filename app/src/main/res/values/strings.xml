@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">WanBoot</string>
+    <string name="title_asleep">Wake me up!</string>
+    <string name="title_awake">Up and running!</string>
+    <string name="title_not_connected">Not connected</string>
+    <string name="title_determining">Determining state</string>
+    <string name="title_error">Error server</string>
+    <string name="sleep_zzz">zZz zZz Zz</string>
+    <string name="magic_sparkle">∞ magic sent !</string>
+    <string name="error_magic">boom no magic at all</string>
+    <string name="hello_world">Hello world !</string>
+    <string name="server_not_responding">Server not responding...</string>
+    <string name="status_sleep">► currently sleeping</string>
+    <string name="status_awake">► currently awake</string>
+    <string name="status_error">► could not determine state</string>
+    <string name="status_ping">→ sending ping request to</string>
+    <string name="status_magic">→ sending bootUp request to</string>
+    <string name="status_chaos">► could not send magic packet</string>
+    <string name="password">password</string>
+    <string name="url_server">url server</string>
+    <string name="username">username</string>
 </resources>

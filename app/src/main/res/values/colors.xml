@@ -3,12 +3,18 @@
     <color name="colorPrimary">#a29bfe</color>
     <color name="colorPrimaryDark">#747d8c</color>
     <color name="colorText">#f1f2f6</color>
+    <color name="colorLoaderBackground">#88000000</color>
     <color name="colorBackground">#dfe4ea</color>
     <color name="colorUnderTextView">#b2bec3</color>
-    <color name="colorShadow">#55000000</color>
+    <color name="colorShadow">#77000000</color>
     <color name="colorButton">#eb3b5a</color>
-    <color name="colorCommandText">#fdcb6e</color>
-    <color name="colorTextAwake">#ff4757</color>
-    <color name="colorTextSleeping">#0be881</color>
-    <color name="colorPrompt">#000</color>
+    <color name="colorButtonDisabled">#88eb3b5a</color>
+    <color name="colorCommandText">#f7d794</color>
+    <color name="colorTextAwake">#0be881</color>
+    <color name="colorTextGreen">#6ab04c</color>
+    <color name="colorTextSleeping">#74b9ff</color>
+    <color name="colorTextDetermining">#a29bfe</color>
+    <color name="colorTextError">#ff4757</color>
+    <color name="colorPrompt">#8893a4</color>
+    <color name="colorTextNotConnected">#f53b57</color>
 </resources>
