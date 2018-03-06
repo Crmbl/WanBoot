@@ -4,10 +4,7 @@ import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.GridLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.github.ybq.android.spinkit.style.Circle
 import org.jetbrains.anko.*
 import java.io.BufferedReader
@@ -17,7 +14,7 @@ import java.util.*
 import java.util.stream.Collectors
 import kotlin.concurrent.timerTask
 import kotlinx.android.synthetic.main.login_popup.view.*
-import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.*
 
 class MainActivity : AppCompatActivity() {
     private var usernameApi : String = ""
@@ -28,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var alert : AlertDialogBuilder? = null
     private var isChecked : Boolean = false
     private var prefs : SharedPreferences? = null
+    private var isPopupShown : Boolean = false
 
     private val prefsFileName = "com.schaeffer.axel.wanboot.prefs"
     private val urlApiPing : String = "/api/wan/Ping"
@@ -41,33 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        prefs = this.getSharedPreferences(prefsFileName, 0)
-        usernameApi = prefs!!.getString("usernameApi", "")
-        passwordApi = prefs!!.getString("passwordApi", "")
-        urlServer = prefs!!.getString("urlServer", "")
-        isChecked = prefs!!.getBoolean("isChecked", false)
-
-        alert = alert {
-            this.customView{
-                val input : View = layoutInflater.inflate(R.layout.login_popup, null)
-                this.addView(input, null)
-                if (usernameApi != "")
-                    input.editText.setText(usernameApi)
-                if (passwordApi != "")
-                    input.editText2.setText(passwordApi)
-                if (urlServer != "")
-                    input.editText3.setText(urlServer)
-                if (isChecked == true)
-                    input.checkBox.isChecked = true
-
-                input.button.setOnClickListener { onClickLogin(input) }
-                input.checkBox.setOnCheckedChangeListener { _, b ->  onCheckBoxChecked(b) }
-            }
-        }.apply {
-            cancellable(false)
-            setFinishOnTouchOutside(false)
-        }.show()
+        showPopup()
     }
 
     private fun setToken() {
@@ -79,9 +51,12 @@ class MainActivity : AppCompatActivity() {
         var result = ""
         try {
             doAsync(task = {
+                //Dev stuff here, bypass ssl verification
+                HttpsTrustManager.allowAllSSL()
                 val urlConnection = URL("$urlServer$urlApiToken").openConnection() as HttpsURLConnection
                 urlConnection.requestMethod = "POST"
-                urlConnection.connectTimeout = 10000
+                urlConnection.connectTimeout = 12000
+                urlConnection.readTimeout = 12000
                 urlConnection.setRequestProperty("Content-Type","application/json")
                 val str = "{\"username\": \"$usernameApi\", \"password\": \"$passwordApi\"}"
                 val outputInBytes = str.toByteArray(charset("UTF-8"))
@@ -102,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     } else {
                         uiThread {
+                            hideLoader()
                             info.text = "${formatPrompt(getString(R.string.server_not_responding))}"
                             info.text = "${formatPrompt(getString(R.string.status_error))}"
                             label.text = getString(R.string.title_error)
@@ -109,7 +85,10 @@ class MainActivity : AppCompatActivity() {
                             button.setBackgroundResource(R.drawable.button_bg_round_diabled)
                             button.isClickable = false
 
-                            hideLoader()
+                            val errorTimer = Timer()
+                            errorTimer.schedule(timerTask {
+                                showPopup()
+                            }, 1000)
                         }
                     }
                 }
@@ -119,19 +98,23 @@ class MainActivity : AppCompatActivity() {
             val timer = Timer()
             timer.schedule(timerTask {
                 if (result == "") {
+                    notNeeded = true
                     runOnUiThread {
                         info.text = "${formatPrompt(getString(R.string.server_not_responding))}"
                         info.text = "${formatPrompt(getString(R.string.status_error))}"
                         label.text = getString(R.string.title_error)
                         label.setTextAppearance(R.style.TextStatusThemeError)
-                        button.setBackgroundResource(R.drawable.button_bg_round)
-                        button.isClickable = true
+                        button.setBackgroundResource(R.drawable.button_bg_round_diabled)
+                        button.isClickable = false
                         hideLoader()
                     }
-                }
 
-                notNeeded = true
-            }, 10000)
+                    val popupTimer = Timer()
+                    popupTimer.schedule(timerTask {
+                        showPopup()
+                    }, 1000)
+                }
+            }, 12000)
         }
     }
 
@@ -147,11 +130,15 @@ class MainActivity : AppCompatActivity() {
         try
         {
             doAsync {
+                //Dev stuff here, bypass ssl verification
+                HttpsTrustManager.allowAllSSL()
                 val urlConnection = URL("$urlServer$urlApiBoot").openConnection() as HttpsURLConnection
                 urlConnection.requestMethod = "GET"
+                urlConnection.connectTimeout = 12000
+                urlConnection.readTimeout = 12000
                 urlConnection.setRequestProperty("Authorization", "Bearer $token")
                 val responseCode = urlConnection.responseCode
-                val result = BufferedReader(InputStreamReader(urlConnection.inputStream)).lines().collect(Collectors.joining())
+                result = BufferedReader(InputStreamReader(urlConnection.inputStream)).lines().collect(Collectors.joining())
                 urlConnection.disconnect()
 
                 //val result = URL(URL_API_WAN + BOOT_REQUEST).readText()
@@ -173,6 +160,7 @@ class MainActivity : AppCompatActivity() {
             val timer = Timer()
             timer.schedule(timerTask {
                 if (result == "") {
+                    notNeeded = true
                     runOnUiThread {
                         info.text = "${formatPrompt(getString(R.string.server_not_responding))}"
                         info.text = "${formatPrompt(getString(R.string.status_error))}"
@@ -182,9 +170,7 @@ class MainActivity : AppCompatActivity() {
                         button.isClickable = true
                     }
                 }
-
-                notNeeded = true
-            }, 10000)
+            }, 12000)
         }
     }
 
@@ -196,15 +182,19 @@ class MainActivity : AppCompatActivity() {
 
         label.text = getString(R.string.title_determining)
         label.setTextAppearance(R.style.TextStatusThemeDetermining)
-        info.text = "${formatPrompt("${getString(R.string.status_ping)} $urlServer...")}"
+        info.text = formatPrompt("${getString(R.string.status_ping)} $urlServer...")
         button.setBackgroundResource(R.drawable.button_bg_round_diabled)
         button.isClickable = false
 
         var result = ""
         try {
             doAsync {
+                //Dev stuff here, bypass ssl verification
+                HttpsTrustManager.allowAllSSL()
                 val urlConnection = URL("$urlServer$urlApiPing").openConnection() as HttpsURLConnection
                 urlConnection.requestMethod = "GET"
+                urlConnection.connectTimeout = 12000
+                urlConnection.readTimeout = 12000
                 urlConnection.setRequestProperty("Authorization", "Bearer $token")
                 val responseCode = urlConnection.responseCode
                 result = BufferedReader(InputStreamReader(urlConnection.inputStream)).lines().collect(Collectors.joining())
@@ -242,6 +232,7 @@ class MainActivity : AppCompatActivity() {
             val timer = Timer()
             timer.schedule(timerTask {
                 if (result == "") {
+                    notNeeded = true
                     runOnUiThread {
                         info.text = "${formatPrompt(getString(R.string.server_not_responding))}"
                         info.text = "${formatPrompt(getString(R.string.status_error))}"
@@ -251,9 +242,7 @@ class MainActivity : AppCompatActivity() {
                         button.isClickable = true
                     }
                 }
-
-                notNeeded = true
-            }, 10000)
+            }, 12000)
         }
     }
 
@@ -280,6 +269,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         alert?.dismiss()
+        isPopupShown = false
         displayLoader()
         setToken()
     }
@@ -288,44 +278,68 @@ class MainActivity : AppCompatActivity() {
         isChecked = b
     }
 
-    fun onClickBtn(v: View) {
+    fun onClickBtn(v : View) {
         // send magic package to boot the computer.
         sendMagicPackage()
     }
 
     private fun formatPrompt(stringToAdd : String) : String{
-        var info = findViewById<TextView>(R.id.label_info)
-        val textSplit = info.text.split('\n')
+        var info = findViewById<EditText>(R.id.label_info)
+        info.text.append("$stringToAdd\n")
+        var length = info.text.length
 
-        if (textSplit.size > 10) {
-            info.text = ""
-            for ((index, value) in textSplit.withIndex()) {
-                if (index == 0)
-                    continue
-                if (value == "")
-                    continue
+        info.post({
+            info.isFocusable = true
+            info.setSelection(length)
+        })
 
-                info.text = "${info.text}$value\n"
-            }
-        }
-
-        info.text = "${info.text}$stringToAdd\n"
         return info.text.toString()
     }
 
     private fun displayLoader() {
         var gridLoader : GridLayout = this@MainActivity.findViewById(R.id.GridLoader)
         var loader : ProgressBar = gridLoader.findViewById(R.id.spin_kit)
-
-        loader?.indeterminateDrawable = Circle()
-        gridLoader?.visibility = View.VISIBLE
+        loader.indeterminateDrawable = Circle()
+        gridLoader.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
         var gridLoader : GridLayout = this@MainActivity.findViewById(R.id.GridLoader)
-        var loader : ProgressBar = gridLoader.findViewById(R.id.spin_kit)
+        gridLoader.visibility = View.INVISIBLE
+    }
 
-        gridLoader?.visibility = View.INVISIBLE
+    private fun showPopup() {
+        if (!isPopupShown) {
+            runOnUiThread({
+                isPopupShown = true
+                prefs = this.getSharedPreferences(prefsFileName, 0)
+                usernameApi = prefs!!.getString("usernameApi", "")
+                passwordApi = prefs!!.getString("passwordApi", "")
+                urlServer = prefs!!.getString("urlServer", "")
+                isChecked = prefs!!.getBoolean("isChecked", false)
+
+                alert = alert {
+                    this.customView{
+                        val input : View = layoutInflater.inflate(R.layout.login_popup, null)
+                        this.addView(input, null)
+                        if (usernameApi != "")
+                            input.editText.setText(usernameApi)
+                        if (passwordApi != "")
+                            input.editText2.setText(passwordApi)
+                        if (urlServer != "")
+                            input.editText3.setText(urlServer)
+                        if (isChecked == true)
+                            input.checkBox.isChecked = true
+
+                        input.button.setOnClickListener { onClickLogin(input) }
+                        input.checkBox.setOnCheckedChangeListener { _, b ->  onCheckBoxChecked(b) }
+                    }
+                }.apply {
+                    cancellable(false)
+                    setFinishOnTouchOutside(false)
+                }.show()
+            })
+        }
     }
 
     //endregion UI methods

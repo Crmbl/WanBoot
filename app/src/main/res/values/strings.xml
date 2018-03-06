@@ -14,7 +14,7 @@
     <string name="status_awake">► currently awake</string>
     <string name="status_error">► could not determine state</string>
     <string name="status_ping">→ sending ping request to</string>
-    <string name="status_magic">→ sending bootUp request to</string>
+    <string name="status_magic">→ sending wake request to</string>
     <string name="status_chaos">► could not send magic packet</string>
     <string name="password">password</string>
     <string name="url_server">url server</string>
