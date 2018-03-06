@@ -145,7 +145,6 @@ class MainActivity : AppCompatActivity() {
                 result = BufferedReader(InputStreamReader(urlConnection.inputStream)).lines().collect(Collectors.joining())
                 urlConnection.disconnect()
 
-                //val result = URL(URL_API_WAN + BOOT_REQUEST).readText()
                 uiThread {
                     if (!notNeeded) {
                         if (result == "Success" && responseCode == 200) {
