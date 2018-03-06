@@ -15,6 +15,10 @@ import java.util.stream.Collectors
 import kotlin.concurrent.timerTask
 import kotlinx.android.synthetic.main.login_popup.view.*
 import javax.net.ssl.*
+import android.text.InputType
+import android.widget.EditText
+
+
 
 class MainActivity : AppCompatActivity() {
     private var usernameApi : String = ""
@@ -286,11 +290,14 @@ class MainActivity : AppCompatActivity() {
     private fun formatPrompt(stringToAdd : String) : String{
         var info = findViewById<EditText>(R.id.label_info)
         info.text.append("$stringToAdd\n")
-        var length = info.text.length
 
         info.post({
+            var length = info.text.length
             info.isFocusable = true
             info.setSelection(length)
+            info.isLongClickable = false
+            info.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            info.setTextIsSelectable(true)
         })
 
         return info.text.toString()
