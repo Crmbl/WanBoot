@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                         uiThread {
                             token = result.split(':')[1].split('"')[1]
                             hideLoader()
-                            pingRequest(true)
+                            pingRequest(false)
                         }
                     } else {
                         uiThread {
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                     if (!notNeeded) {
                         if (result == "Success" && responseCode == 200) {
                             info.text = "${formatPrompt(getString(R.string.magic_sparkle))}"
-                            pingRequest(false)
+                            pingRequest(true)
                         }
                         else {
                             info.text = "${formatPrompt(getString(R.string.error_magic))}"
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun pingRequest(justPing : Boolean) {
+    private fun pingRequest(doTwice : Boolean) {
         notNeeded = false
         var label = findViewById<TextView>(R.id.label_status)
         var info = findViewById<TextView>(R.id.label_info)
@@ -210,14 +210,8 @@ class MainActivity : AppCompatActivity() {
                             info.text = "${formatPrompt(getString(R.string.status_awake))}"
                             label.text = getString(R.string.title_awake)
                             label.setTextAppearance(R.style.TextStatusThemeAwake)
-
-                            if (justPing) {
-                                button.setBackgroundResource(R.drawable.button_bg_round)
-                                button.isClickable = true
-                            } else {
-                                button.setBackgroundResource(R.drawable.button_bg_round_diabled)
-                                button.isClickable = false
-                            }
+                            button.setBackgroundResource(R.drawable.button_bg_round_diabled)
+                            button.isClickable = false
                         }
                         else {
                             info.text = "${formatPrompt(getString(R.string.sleep_zzz))}"
@@ -244,6 +238,8 @@ class MainActivity : AppCompatActivity() {
                         button.setBackgroundResource(R.drawable.button_bg_round)
                         button.isClickable = true
                     }
+
+                    pingRequest(false)
                 }
             }, 12000)
         }
