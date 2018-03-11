@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var isChecked : Boolean = false
     private var prefs : SharedPreferences? = null
     private var isPopupShown : Boolean = false
+    private var isMagicSent : Boolean = false
 
     private val prefsFileName = "com.schaeffer.axel.wanboot.prefs"
     private val urlApiPing : String = "/api/wan/Ping"
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                         uiThread {
                             token = result.split(':')[1].split('"')[1]
                             hideLoader()
-                            pingRequest(false)
+                            pingRequest()
                         }
                     } else {
                         uiThread {
@@ -149,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                     if (!notNeeded) {
                         if (result == "Success" && responseCode == 200) {
                             info.text = "${formatPrompt(getString(R.string.magic_sparkle))}"
-                            pingRequest(true)
+                            isMagicSent = true
                         }
                         else {
                             info.text = "${formatPrompt(getString(R.string.error_magic))}"
@@ -177,7 +178,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun pingRequest(doTwice : Boolean) {
+    private fun pingRequest() {
         notNeeded = false
         var label = findViewById<TextView>(R.id.label_status)
         var info = findViewById<TextView>(R.id.label_info)
@@ -214,9 +215,6 @@ class MainActivity : AppCompatActivity() {
                             button.isClickable = false
                         }
                         else {
-                            if (doTwice)
-                                pingRequest(false)
-
                             info.text = "${formatPrompt(getString(R.string.sleep_zzz))}"
                             info.text = "${formatPrompt(getString(R.string.status_sleep))}"
                             label.text = getString(R.string.title_asleep)
@@ -280,7 +278,10 @@ class MainActivity : AppCompatActivity() {
 
     fun onClickBtn(v : View) {
         // send magic package to boot the computer.
-        sendMagicPackage()
+        if (!isMagicSent)
+            sendMagicPackage()
+        else
+            pingRequest()
     }
 
     private fun formatPrompt(stringToAdd : String) : String{
