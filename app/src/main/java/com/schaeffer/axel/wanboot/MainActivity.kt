@@ -214,6 +214,9 @@ class MainActivity : AppCompatActivity() {
                             button.isClickable = false
                         }
                         else {
+                            if (doTwice)
+                                pingRequest(false)
+
                             info.text = "${formatPrompt(getString(R.string.sleep_zzz))}"
                             info.text = "${formatPrompt(getString(R.string.status_sleep))}"
                             label.text = getString(R.string.title_asleep)
@@ -238,8 +241,6 @@ class MainActivity : AppCompatActivity() {
                         button.setBackgroundResource(R.drawable.button_bg_round)
                         button.isClickable = true
                     }
-
-                    pingRequest(false)
                 }
             }, 12000)
         }
